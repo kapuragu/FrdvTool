@@ -1,25 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Xml.Serialization;
 
 namespace FrdvTool.HelpBone
 {
-    public class HelpBoneType14 : HelpBoneTypeData
+    [XmlType]
+    public class RigDriverType14 : RigDriver
     {
+        [XmlElement]
         public float Weight { get; set; }
+        [XmlElement]
         public float LimitMinDeg { get; set; }
+        [XmlElement]
         public float LimitMaxDeg { get; set; }
+        [XmlElement]
         public FRDV_LIMIT_AXIS Axis { get; set; }
+        [XmlElement]
         public float WeightB { get; set; }
+        [XmlElement]
         public float LimitMinBDegrees { get; set; }
+        [XmlElement]
         public float LimitMaxBDegrees { get; set; }
+        [XmlElement]
         public bool UnknownBool { get; set; }
+        [XmlElement]
         public FRDV_ACTION_TYPE_14_UNK_ENUM UnknownEnum { get; set; }
-        public Vector3 VecA { get; set; }
-        public Vector3 VecB { get; set; }
-        public void Read(BinaryReader reader)
+        [XmlElement]
+        public Vector3 VecA = new();
+        [XmlElement]
+        public Vector3 VecB = new();
+        public override void ReadTypeParams(BinaryReader reader)
         {
             Weight = reader.ReadSingle();
             reader.ReadUInt32();
@@ -36,6 +44,22 @@ namespace FrdvTool.HelpBone
             VecA.Read(reader); reader.ReadUInt32();
             VecB = new();
             VecB.Read(reader);
+        }
+        public override void WriteTypeParams(BinaryWriter writer)
+        {
+            writer.Write(Weight);
+            writer.WriteZeroes(sizeof(uint));
+            writer.Write(LimitMinDeg);
+            writer.Write(LimitMaxDeg);
+            writer.Write((uint)Axis);
+            writer.Write(WeightB);
+            writer.WriteZeroes(sizeof(uint));
+            writer.Write(LimitMinBDegrees);
+            writer.Write(LimitMaxBDegrees);
+            writer.Write(UnknownBool); writer.AlignStream(sizeof(uint));
+            writer.Write((uint)UnknownEnum);
+            VecA.Write(writer); writer.WriteZeroes(sizeof(uint));
+            VecB.Write(writer);
         }
     }
 }

@@ -1,9 +1,14 @@
-﻿namespace FrdvTool
+﻿using System.Xml.Serialization;
+
+namespace FrdvTool
 {
     public class Vector3
     {
+        [XmlAttribute]
         public float X { get; set; }
+        [XmlAttribute]
         public float Y { get; set; }
+        [XmlAttribute]
         public float Z { get; set; }
 
         public virtual void Read(BinaryReader reader)
