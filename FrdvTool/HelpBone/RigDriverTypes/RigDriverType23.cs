@@ -17,7 +17,7 @@ namespace FrdvTool.HelpBone
         public Vector3 Up = new();
         [XmlElement]
         public Vector3 Forward = new();
-        public override void ReadTypeParams(BinaryReader reader)
+        public override void ReadTypeParams(BinaryReader reader, HashManager hashManager)
         {
             Weight = reader.ReadSingle();
             Offset = reader.ReadSingle();

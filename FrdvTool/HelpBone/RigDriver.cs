@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace FrdvTool.HelpBone
 {
@@ -71,41 +72,55 @@ namespace FrdvTool.HelpBone
     public class RigDriver
     {
         [XmlAttribute]
-        public short TargetSkelIndex { get; set; }
+        public string Target { get; set; } = string.Empty;
         [XmlAttribute]
-        public short SourceSkelIndex { get; set; }
+        public string Source { get; set; } = string.Empty;
         [XmlAttribute]
-        public short SourceSkelIndex2 { get; set; }
+        public string Source2 { get; set; } = string.Empty;
         [XmlAttribute]
-        public short TargetParentIndex { get; set; }
+        public string TargetParent { get; set; } = string.Empty;
         [XmlAttribute]
-        public short SourceParentSkelIndex { get; set; }
+        public string SourceParent { get; set; } = string.Empty;
         [XmlAttribute]
-        public short SourceParentSkelIndex2 { get; set; }
+        public string SourceParent2 { get; set; } = string.Empty;
 
-        public void Read(BinaryReader reader)
+        public void Read(BinaryReader reader, HashManager hashManager, Dictionary<short, FoxHash> bones)
         {
-            TargetSkelIndex = reader.ReadInt16();
-            SourceSkelIndex = reader.ReadInt16();
-            SourceSkelIndex2 = reader.ReadInt16();
-            TargetParentIndex = reader.ReadInt16();
-            SourceParentSkelIndex = reader.ReadInt16();
-            SourceParentSkelIndex2 = reader.ReadInt16();
+            Target = ReadIndex(reader, bones);
+            Source = ReadIndex(reader, bones);
+            Source2 = ReadIndex(reader, bones);
+            TargetParent = ReadIndex(reader, bones);
+            SourceParent = ReadIndex(reader, bones);
+            SourceParent2 = ReadIndex(reader, bones);
             reader.ReadUInt16();
 
-            ReadTypeParams(reader);
+            ReadTypeParams(reader, hashManager);
         }
-        public virtual void ReadTypeParams(BinaryReader reader) => throw new ArgumentOutOfRangeException($"Rig type {this.GetType()} unsupported");
-        public void Write(BinaryWriter writer)
+        private static string ReadIndex(BinaryReader reader, Dictionary<short,FoxHash> bones)
         {
-            writer.Write(TargetSkelIndex);
-            writer.Write(SourceSkelIndex);
-            writer.Write(SourceSkelIndex2);
-            writer.Write(TargetParentIndex);
-            writer.Write(SourceParentSkelIndex);
-            writer.Write(SourceParentSkelIndex2);
+            var index = reader.ReadInt16();
+            if (index >= 0)
+            {
+                return bones.ContainsKey(index) ? bones[index].Name : index.ToString();
+            }
+            return index.ToString();
+        }
+        public virtual void ReadTypeParams(BinaryReader reader, HashManager hashManager) => throw new ArgumentOutOfRangeException($"Rig type {this.GetType()} unsupported");
+        public void Write(BinaryWriter writer, Dictionary<short, FoxHash> bones)
+        {
+            WriteIndex(Target, writer, bones);
+            WriteIndex(Source, writer, bones);
+            WriteIndex(Source2, writer, bones);
+            WriteIndex(TargetParent, writer, bones);
+            WriteIndex(SourceParent, writer, bones);
+            WriteIndex(SourceParent2, writer, bones);
             writer.WriteZeroes(sizeof(ushort));
             WriteTypeParams(writer);
+        }
+        public void WriteIndex(string name, BinaryWriter writer, Dictionary<short, FoxHash> bones)
+        {
+            short index = short.TryParse(name, out short _index) ? _index : bones.FirstOrDefault(x => x.Value.Name.Equals(name)).Key;
+            writer.Write(index);
         }
         public virtual void WriteTypeParams(BinaryWriter writer) => throw new ArgumentOutOfRangeException($"Rig type {this.GetType()} unsupported");
     }

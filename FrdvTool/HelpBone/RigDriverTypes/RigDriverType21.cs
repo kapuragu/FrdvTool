@@ -10,24 +10,24 @@ namespace FrdvTool.HelpBone
         [XmlElement]
         public float LimitMax { get; set; }
         [XmlElement]
-        public uint MaterialNameA { get; set; }
+        public FoxHash MaterialNameA = new();
         [XmlElement]
-        public uint MaterialParamA { get; set; }
+        public FoxHash MaterialParamA = new();
         [XmlElement]
-        public uint MaterialParamB { get; set; }
+        public FoxHash MaterialParamB = new();
         [XmlElement]
         public Vector3 Up = new();
         [XmlElement]
         public Vector3 Forward = new();
-        public override void ReadTypeParams(BinaryReader reader)
+        public override void ReadTypeParams(BinaryReader reader, HashManager hashManager)
         {
             reader.ReadBytes(sizeof(uint) * 2);
             LimitMin = reader.ReadSingle();
             LimitMax = reader.ReadSingle();
-            MaterialNameA = reader.ReadUInt32();
+            MaterialNameA.Read(reader, hashManager.StrCode32LookupTable);
             reader.ReadBytes(sizeof(uint) * 5);
-            MaterialParamA = reader.ReadUInt32();
-            MaterialParamB = reader.ReadUInt32();
+            MaterialParamA.Read(reader, hashManager.StrCode32LookupTable);
+            MaterialParamB.Read(reader, hashManager.StrCode32LookupTable);
             reader.ReadUInt32();
             Up = new();
             Up.Read(reader); reader.ReadUInt32();
@@ -39,10 +39,10 @@ namespace FrdvTool.HelpBone
             writer.WriteZeroes(sizeof(uint)*2);
             writer.Write(LimitMin);
             writer.Write(LimitMax);
-            writer.Write(MaterialNameA);
+            MaterialNameA.Write(writer);
             writer.WriteZeroes(sizeof(uint) * 5);
-            writer.Write(MaterialParamA);
-            writer.Write(MaterialParamB);
+            MaterialParamA.Write(writer);
+            MaterialParamB.Write(writer);
             writer.WriteZeroes(sizeof(uint));
             Up.Write(writer); writer.WriteZeroes(sizeof(uint));
             Forward.Write(writer);

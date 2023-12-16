@@ -12,30 +12,30 @@ namespace FrdvTool.HelpBone
         [XmlElement]
         public float LimitMax { get; set; }
         [XmlElement]
-        public uint MaterialNameA { get; set; }
+        public FoxHash MaterialNameA = new();
         [XmlElement]
-        public uint MaterialNameC { get; set; }
+        public FoxHash MaterialNameC = new();
         [XmlElement]
-        public uint MaterialParamC { get; set; }
+        public FoxHash MaterialParamC = new();
         [XmlElement]
-        public uint MaterialNameB { get; set; }
+        public FoxHash MaterialNameB = new();
         [XmlElement]
-        public uint MaterialParamA { get; set; }
+        public FoxHash MaterialParamA = new();
         [XmlElement]
-        public uint MaterialParamB { get; set; }
-        public override void ReadTypeParams(BinaryReader reader)
+        public FoxHash MaterialParamB = new();
+        public override void ReadTypeParams(BinaryReader reader, HashManager hashManager)
         {
             Weight = reader.ReadSingle();
             reader.ReadUInt32();
             LimitMin = reader.ReadSingle();
             LimitMax = reader.ReadSingle();
-            MaterialNameA = reader.ReadUInt32();
+            MaterialNameA.Read(reader, hashManager.StrCode32LookupTable);
             reader.ReadBytes(sizeof(uint) * 2);
-            MaterialNameC = reader.ReadUInt32();
-            MaterialParamC = reader.ReadUInt32();
-            MaterialNameB = reader.ReadUInt32();
-            MaterialParamA = reader.ReadUInt32();
-            MaterialParamB = reader.ReadUInt32();
+            MaterialNameC.Read(reader, hashManager.StrCode32LookupTable);
+            MaterialParamC.Read(reader, hashManager.StrCode32LookupTable);
+            MaterialNameB.Read(reader, hashManager.StrCode32LookupTable);
+            MaterialParamA.Read(reader, hashManager.StrCode32LookupTable);
+            MaterialParamB.Read(reader, hashManager.StrCode32LookupTable);
         }
         public override void WriteTypeParams(BinaryWriter writer)
         {
@@ -43,13 +43,13 @@ namespace FrdvTool.HelpBone
             writer.WriteZeroes(sizeof(uint));
             writer.Write(LimitMin);
             writer.Write(LimitMax);
-            writer.Write(MaterialNameA);
+            MaterialNameA.Write(writer);
             writer.WriteZeroes(sizeof(uint) * 2);
-            writer.Write(MaterialNameC);
-            writer.Write(MaterialParamC);
-            writer.Write(MaterialNameB);
-            writer.Write(MaterialParamA);
-            writer.Write(MaterialParamB);
+            MaterialNameC.Write(writer);
+            MaterialParamC.Write(writer);
+            MaterialNameB.Write(writer);
+            MaterialParamA.Write(writer);
+            MaterialParamB.Write(writer);
         }
     }
 }

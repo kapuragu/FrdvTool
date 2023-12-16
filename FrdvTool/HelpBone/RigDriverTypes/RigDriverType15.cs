@@ -13,7 +13,7 @@ namespace FrdvTool.HelpBone
         public Vector3 VecC = new();
         [XmlElement]
         public Vector3 VecD = new();
-        public override void ReadTypeParams(BinaryReader reader)
+        public override void ReadTypeParams(BinaryReader reader, HashManager hashManager)
         {
             reader.ReadBytes(sizeof(uint) * 12);
             VecA = new();

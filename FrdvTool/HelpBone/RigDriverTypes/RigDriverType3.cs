@@ -17,7 +17,7 @@ namespace FrdvTool.HelpBone
         public FRDV_LIMIT_AXIS Axis { get; set; }
         [XmlElement]
         public float WeightB { get; set; }
-        public override void ReadTypeParams(BinaryReader reader)
+        public override void ReadTypeParams(BinaryReader reader, HashManager hashManager)
         {
             WeightDeg = reader.ReadSingle();
             Offset = reader.ReadSingle();

@@ -7,7 +7,7 @@ namespace FrdvTool.HelpBone
     {
         [XmlElement]
         public float Weight { get; set; }
-        public override void ReadTypeParams(BinaryReader reader)
+        public override void ReadTypeParams(BinaryReader reader, HashManager hashManager)
         {
             Weight = reader.ReadSingle();
         }

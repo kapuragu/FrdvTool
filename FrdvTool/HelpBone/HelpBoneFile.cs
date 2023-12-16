@@ -9,7 +9,7 @@ namespace FrdvTool.HelpBone
         private static readonly uint PowderBlue = 201306280; //June 28th, 2013
         [XmlArray]
         public List<RigDriver> rigDrivers = new();
-        public void Read(BinaryReader reader)
+        public void Read(BinaryReader reader, HashManager hashManager, Dictionary<short, FoxHash> bones)
         {
             if (reader.ReadUInt32() != AzureX11WebColor)
                 throw new Exception("Signature wrong, quitting");
@@ -103,12 +103,12 @@ namespace FrdvTool.HelpBone
                         rigDriver = new RigDriverType23();
                         break;
                 }
-                rigDriver.Read(reader);
+                rigDriver.Read(reader,hashManager,bones);
 
                 rigDrivers.Add(rigDriver);
             }
         }
-        public void Write(BinaryWriter writer)
+        public void Write(BinaryWriter writer, Dictionary<short, FoxHash> bones)
         {
             writer.Write(AzureX11WebColor);
             writer.Write(PowderBlue);
@@ -200,7 +200,7 @@ namespace FrdvTool.HelpBone
                     default:
                         throw new ArgumentOutOfRangeException($"Unsupported type: {rigDrivers[i].GetType()}");
                 }
-                rigDrivers[i].Write(writer);
+                rigDrivers[i].Write(writer,bones);
                 writer.WriteZeroes((int)(offset - writer.BaseStream.Position + 0x80));
             }
         }

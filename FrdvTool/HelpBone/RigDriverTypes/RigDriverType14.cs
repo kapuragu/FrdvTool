@@ -27,7 +27,7 @@ namespace FrdvTool.HelpBone
         public Vector3 VecA = new();
         [XmlElement]
         public Vector3 VecB = new();
-        public override void ReadTypeParams(BinaryReader reader)
+        public override void ReadTypeParams(BinaryReader reader, HashManager hashManager)
         {
             Weight = reader.ReadSingle();
             reader.ReadUInt32();

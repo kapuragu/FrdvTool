@@ -12,13 +12,13 @@ namespace FrdvTool.HelpBone
         [XmlElement]
         public float LimitMax { get; set; }
         [XmlElement]
-        public uint MaterialNameA { get; set; }
+        public FoxHash MaterialNameA = new();
         [XmlElement]
-        public uint MaterialNameB { get; set; }
+        public FoxHash MaterialNameB = new();
         [XmlElement]
-        public uint MaterialParamA { get; set; }
+        public FoxHash MaterialParamA = new();
         [XmlElement]
-        public uint MaterialParamB { get; set; }
+        public FoxHash MaterialParamB = new();
         [XmlElement]
         public Vector3 Up = new();
         [XmlElement]
@@ -27,17 +27,17 @@ namespace FrdvTool.HelpBone
         public Vector3 VecA = new();
         [XmlElement]
         public Vector3 VecB = new();
-        public override void ReadTypeParams(BinaryReader reader)
+        public override void ReadTypeParams(BinaryReader reader, HashManager hashManager)
         {
             Weight = reader.ReadSingle();
             reader.ReadUInt32();
             LimitMin = reader.ReadSingle();
             LimitMax = reader.ReadSingle();
-            MaterialNameA = reader.ReadUInt32();
+            MaterialNameA.Read(reader, hashManager.StrCode32LookupTable);
             reader.ReadBytes(sizeof(uint) * 4);
-            MaterialNameB = reader.ReadUInt32();
-            MaterialParamA = reader.ReadUInt32();
-            MaterialParamB = reader.ReadUInt32();
+            MaterialNameB.Read(reader, hashManager.StrCode32LookupTable);
+            MaterialParamA.Read(reader, hashManager.StrCode32LookupTable);
+            MaterialParamB.Read(reader, hashManager.StrCode32LookupTable);
             Up = new();
             Up.Read(reader); reader.ReadUInt32();
             Forward = new();
@@ -53,11 +53,11 @@ namespace FrdvTool.HelpBone
             writer.WriteZeroes(sizeof(uint));
             writer.Write(LimitMin);
             writer.Write(LimitMax);
-            writer.Write(MaterialNameA);
+            MaterialNameA.Write(writer);
             writer.WriteZeroes(sizeof(uint)*4);
-            writer.Write(MaterialNameB);
-            writer.Write(MaterialParamA);
-            writer.Write(MaterialParamB);
+            MaterialNameB.Write(writer);
+            MaterialParamA.Write(writer);
+            MaterialParamB.Write(writer);
             Up.Write(writer); writer.WriteZeroes(sizeof(uint));
             Forward.Write(writer); writer.WriteZeroes(sizeof(uint));
             VecA.Write(writer); writer.WriteZeroes(sizeof(uint));
