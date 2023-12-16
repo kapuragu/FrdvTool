@@ -117,7 +117,7 @@ namespace FrdvTool.HelpBone
             writer.WriteZeroes(sizeof(ushort));
             WriteTypeParams(writer);
         }
-        public void WriteIndex(string name, BinaryWriter writer, Dictionary<short, FoxHash> bones)
+        public static void WriteIndex(string name, BinaryWriter writer, Dictionary<short, FoxHash> bones)
         {
             short index = short.TryParse(name, out short _index) ? _index : bones.FirstOrDefault(x => x.Value.Name.Equals(name)).Key;
             writer.Write(index);
