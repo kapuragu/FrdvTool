@@ -119,7 +119,7 @@ namespace FrdvTool
                 {
                     reader.BaseStream.Position = featureDataOffset + hashOffset + boneIndex * sizeof(ulong);
                     FoxHash boneNameHash = new();
-                    boneNameHash.Read(reader, hashManager.StrCode32LookupTable);
+                    boneNameHash.Read64(reader, hashManager.StrCode32LookupTable);
                     bones.Add((short)(boneIndex - 1), boneNameHash);
                 }
             }
