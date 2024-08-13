@@ -4,7 +4,7 @@ Fox Engine .frdv Fox Rig Driver decompiler/compiler. Based on research by Joey35
 # Usage
 To decompile a .frdv file or compile a decompiled .frdv.xml file, simply drag the target file over the application .exe.
 
-**In command line:**:
+**In command line:**
 > FrdvTool file.frdv
 
 > FrdvTool file.frdv.xml
